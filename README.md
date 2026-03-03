@@ -6,7 +6,6 @@
 
 ## 公開ページ
 
-- ギャラリートップ: https://knakamurajp.github.io/VRsailing_viewer/
 - Port view: https://knakamurajp.github.io/VRsailing_viewer/portview_upwinndsailing_snap_0m19s_1.html
 - Starboard view: https://knakamurajp.github.io/VRsailing_viewer/starboradview_upwindsailing_snap_0m49s.html
 
