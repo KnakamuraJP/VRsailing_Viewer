@@ -4,6 +4,8 @@
 
 リンクを知っている人であれば、PC やスマートフォンのブラウザからそのまま閲覧できます。各 `*.html` は 1 枚の 360° パノラマ画像を埋め込んだ単体ビューアで、追加のアプリやサーバーは不要です。
 
+以前VR新歓用にクルー目線で撮影した動画を専用ビューアー無しでも誰でも見れるようにしました。
+
 ## 公開ページ
 
 - Port view: https://knakamurajp.github.io/VRsailing_viewer/portview_upwinndsailing_snap_0m19s_1.html
