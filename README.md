@@ -25,15 +25,6 @@
 - `portview_upwinndsailing_snap_0m19s_1.html`: ポート側視点の 360° スナップショット
 - `starboradview_upwindsailing_snap_0m49s.html`: スターボード側視点の 360° スナップショット
 
-## 用途例
-
-### 新歓でのVRセーリング体験
-
-霞ヶ浦でなくとも陸上にいながらリアルなセーリングの臨場感を味わえるツールとして活用できます。
-
-
-![新歓でのVRセーリング体験の様子](VR新歓.jpg)
-
 ### ビューアで見える景色の例
 
 ![クルー目線から見たポート側の景色](VRsailing_portside_crew_view.jpg)
