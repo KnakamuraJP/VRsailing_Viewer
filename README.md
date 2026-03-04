@@ -8,8 +8,8 @@
 
 ## 公開ページ
 
-- Port view: https://knakamurajp.github.io/VRsailing_viewer/portview_upwinndsailing_snap_0m19s_1.html
-- Starboard view: https://knakamurajp.github.io/VRsailing_viewer/starboradview_upwindsailing_snap_0m49s.html
+- Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_snap_0m19s_1.html
+- Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_snap_0m49s.html
 
 ## 使い方
 
