@@ -8,11 +8,14 @@
 
 ## 公開ページ
 
-### VRsailing 360° スナップショット（画像）
+### VRsailing 360° Snamshot View
+（画像）
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_snap_0m19s_1.html
 - Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_snap_0m49s.html
 
-### VRsailing In Motion 360° 動画 （サウンド付き）
+### VRsailing In Motion 360° 
+動画 （サウンド付き）
+※スマホではロード時間が長いためPCでの閲覧を推奨
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_viewer.html
 - Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_viewer.html
 
