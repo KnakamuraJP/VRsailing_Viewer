@@ -14,6 +14,7 @@
 
 ### 360° 動画（サウンド付き）
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_viewer.html
+- Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_viewer.html
 
 ## 使い方
 
@@ -28,6 +29,9 @@
 - `index.html`: GitHub Pages のトップページ
 - `portview_upwinndsailing_snap_0m19s_1.html`: ポート側視点の 360° スナップショット
 - `starboradview_upwindsailing_snap_0m49s.html`: スターボード側視点の 360° スナップショット
+- `portview_upwinndsailing_viewer.html`: ポート側視点の 360° 動画ビューア
+- `starboradview_upwindsailing_viewer.html`: スターボード側視点の 360° 動画ビューア
+- `videos/`: 360° 動画ファイル（MP4）
 
 ### ビューアで見える景色の例
 
