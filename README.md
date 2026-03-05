@@ -12,7 +12,7 @@
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_snap_0m19s_1.html
 - Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_snap_0m49s.html
 
-### 360° 動画（音声付き）
+### 360° 動画（サウンド付き）
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_viewer.html
 
 ## 使い方
