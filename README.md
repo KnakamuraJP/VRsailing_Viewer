@@ -27,8 +27,8 @@
 ## ファイル構成
 
 - `index.html`: GitHub Pages のトップページ
-- `portview_upwinndsailing_snap_0m19s_1.html`: ポート側視点の 360° スナップショット
-- `starboradview_upwindsailing_snap_0m49s.html`: スターボード側視点の 360° スナップショット
+- `portview_upwinndsailing_snap_0m19s_1.html`: ポート側視点の 360° スナップショットビューア（アップウインド走行 0分19秒時点）
+- `starboradview_upwindsailing_snap_0m49s.html`: スターボード側視点の 360° スナップショットビューア（アップウインド走行 0分49秒時点）
 - `portview_upwinndsailing_viewer.html`: ポート側視点の 360° 動画ビューア
 - `starboradview_upwindsailing_viewer.html`: スターボード側視点の 360° 動画ビューア
 - `videos/`: 360° 動画ファイル（MP4）
