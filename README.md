@@ -9,7 +9,7 @@
 ## 公開ページ
 
 ### VRsailing 360° Snamshot View
-（画像）
+画像
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_snap_0m19s_1.html
 - Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_snap_0m49s.html
 
