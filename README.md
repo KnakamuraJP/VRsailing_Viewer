@@ -15,6 +15,7 @@
 
 ### VRsailing In Motion 360° 
 動画 （サウンド付き）
+
 ※スマホではロード時間が長いためPCでの閲覧を推奨
 - Port view: https://knakamurajp.github.io/VRsailing_Viewer/portview_upwinndsailing_viewer.html
 - Starboard view: https://knakamurajp.github.io/VRsailing_Viewer/starboradview_upwindsailing_viewer.html
