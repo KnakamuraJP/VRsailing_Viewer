@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>starboradview_upwindsailing.mp4 - 360° Video</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;color:#e0e0e0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;overflow:hidden;height:100vh;width:100vw}
+canvas{display:block;width:100%;height:100%}
+#hud{position:absolute;top:0;left:0;right:0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(to bottom,rgba(0,0,0,.6),transparent);pointer-events:none;z-index:10}
+#hud>*{pointer-events:auto}
+#title{font-size:14px;font-weight:500;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.hud-btn{background:rgba(255,255,255,.12);border:none;color:#e0e0e0;border-radius:6px;padding:6px 12px;font-size:13px;cursor:pointer;transition:background .2s}
+.hud-btn:hover{background:rgba(255,255,255,.25)}
+#controls{position:absolute;bottom:0;left:0;right:0;padding:10px 16px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);display:flex;align-items:center;gap:10px;z-index:10}
+#play-btn{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px}
+#progress{flex:1;height:6px;background:rgba(255,255,255,.15);border-radius:3px;cursor:pointer;position:relative}
+#progress-fill{height:100%;background:#4a9eff;border-radius:3px;width:0%;pointer-events:none}
+#time{font-size:12px;color:rgba(255,255,255,.6);min-width:80px;text-align:center}
+#vol-btn{background:none;border:none;color:#fff;font-size:16px;cursor:pointer}
+#hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.7);border-radius:12px;padding:20px 28px;text-align:center;font-size:15px;line-height:1.6;z-index:20;pointer-events:none;transition:opacity .6s}
+#hint.hidden{opacity:0}
+#loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30}
+.spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.15);border-top-color:#4a9eff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="loading"><div class="spinner"></div></div>
+<div id="hint">
+  Drag to look around<br>
+  Scroll to zoom<br>
+  Click to play
+</div>
+<div id="hud">
+  <span id="title">starboradview_upwindsailing.mp4</span>
+  <div style="display:flex;gap:8px">
+    <button class="hud-btn" id="fs-btn">Fullscreen</button>
+  </div>
+</div>
+<div id="controls">
+  <button id="play-btn">&#9654;</button>
+  <div id="progress"><div id="progress-fill"></div></div>
+  <span id="time">0:00 / 0:00</span>
+  <button id="vol-btn">&#128266;</button>
+</div>
+<canvas id="c"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+var VIDEO_URL = "https://github.com/KnakamuraJP/VRsailing_Viewer/releases/download/starboradview_upwindsailing/starboradview_upwindsailing.mp4";
+
+var canvas = document.getElementById("c");
+var hint = document.getElementById("hint");
+var loading = document.getElementById("loading");
+var playBtn = document.getElementById("play-btn");
+var progressBar = document.getElementById("progress");
+var progressFill = document.getElementById("progress-fill");
+var timeDisplay = document.getElementById("time");
+var volBtn = document.getElementById("vol-btn");
+
+var scene = new THREE.Scene();
+var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 0);
+
+var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+var geometry = new THREE.SphereGeometry(500, 64, 32);
+geometry.scale(-1, 1, 1);
+var material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+var sphere = new THREE.Mesh(geometry, material);
+scene.add(sphere);
+
+/* --- State --- */
+var lon = 0, lat = 0;
+var isDragging = false;
+var prevX = 0, prevY = 0;
+var hintTimer = null;
+var isPlaying = false;
+var videoTexture = null;
+
+/* --- Video element --- */
+var video = document.createElement("video");
+video.crossOrigin = "anonymous";
+video.playsInline = true;
+video.loop = true;
+video.preload = "auto";
+video.src = VIDEO_URL;
+
+video.addEventListener("canplay", function onCanPlay() {
+    video.removeEventListener("canplay", onCanPlay);
+    loading.style.display = "none";
+    hintTimer = setTimeout(function(){ hint.classList.add("hidden"); }, 4000);
+
+    videoTexture = new THREE.VideoTexture(video);
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.format = THREE.RGBFormat;
+    sphere.material.dispose();
+    sphere.material = new THREE.MeshBasicMaterial({ map: videoTexture });
+});
+
+video.addEventListener("error", function() {
+    loading.innerHTML = '<div style="color:#f44;font-size:14px;text-align:center">Failed to load video<br><small style="opacity:.5">The video may still be processing on GitHub</small></div>';
+});
+
+/* --- Render --- */
+function fmtTime(s) {
+    var m = Math.floor(s / 60);
+    var sec = Math.floor(s % 60);
+    return m + ":" + (sec < 10 ? "0" : "") + sec;
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (videoTexture) videoTexture.needsUpdate = true;
+    var phi = THREE.MathUtils.degToRad(90 - lat);
+    var theta = THREE.MathUtils.degToRad(lon);
+    camera.lookAt(new THREE.Vector3(
+        Math.sin(phi) * Math.cos(theta),
+        Math.cos(phi),
+        Math.sin(phi) * Math.sin(theta)
+    ));
+    renderer.render(scene, camera);
+
+    if (video.duration) {
+        progressFill.style.width = (video.currentTime / video.duration * 100) + "%";
+        timeDisplay.textContent = fmtTime(video.currentTime) + " / " + fmtTime(video.duration);
+    }
+}
+animate();
+
+/* --- Resize --- */
+window.addEventListener("resize", function() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* --- Play/Pause --- */
+function togglePlay() {
+    if (isPlaying) {
+        video.pause();
+        isPlaying = false;
+        playBtn.innerHTML = "&#9654;";
+    } else {
+        video.play().then(function() {
+            isPlaying = true;
+            playBtn.innerHTML = "&#9646;&#9646;";
+        }).catch(function(){});
+    }
+}
+playBtn.addEventListener("click", togglePlay);
+canvas.addEventListener("click", function(e) {
+    if (!isDragging) togglePlay();
+});
+
+/* --- Progress seek --- */
+progressBar.addEventListener("click", function(e) {
+    if (!video.duration) return;
+    var rect = progressBar.getBoundingClientRect();
+    var pct = (e.clientX - rect.left) / rect.width;
+    video.currentTime = pct * video.duration;
+});
+
+/* --- Volume --- */
+var muted = false;
+volBtn.addEventListener("click", function() {
+    muted = !muted;
+    video.muted = muted;
+    volBtn.innerHTML = muted ? "&#128263;" : "&#128266;";
+});
+
+/* --- Mouse --- */
+var clickMoved = false;
+canvas.addEventListener("mousedown", function(e) {
+    isDragging = true;
+    clickMoved = false;
+    prevX = e.clientX;
+    prevY = e.clientY;
+    hideHint();
+});
+document.addEventListener("mousemove", function(e) {
+    if (!isDragging) return;
+    var dx = e.clientX - prevX;
+    var dy = e.clientY - prevY;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) clickMoved = true;
+    lon -= dx * 0.2;
+    lat += dy * 0.2;
+    lat = Math.max(-85, Math.min(85, lat));
+    prevX = e.clientX;
+    prevY = e.clientY;
+});
+document.addEventListener("mouseup", function() {
+    isDragging = false;
+});
+// Override canvas click to only toggle play if no drag occurred
+canvas.removeEventListener("click", togglePlay);
+canvas.addEventListener("click", function() {
+    if (!clickMoved) togglePlay();
+});
+
+/* --- Touch --- */
+var touchPrevX = 0, touchPrevY = 0;
+var touchStartDist = 0, touchStartFov = 75;
+canvas.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    hideHint();
+    if (e.touches.length === 1) {
+        isDragging = true;
+        touchPrevX = e.touches[0].clientX;
+        touchPrevY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+        isDragging = false;
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        touchStartDist = Math.sqrt(dx * dx + dy * dy);
+        touchStartFov = camera.fov;
+    }
+}, { passive: false });
+canvas.addEventListener("touchmove", function(e) {
+    e.preventDefault();
+    if (e.touches.length === 1 && isDragging) {
+        lon -= (e.touches[0].clientX - touchPrevX) * 0.2;
+        lat += (e.touches[0].clientY - touchPrevY) * 0.2;
+        lat = Math.max(-85, Math.min(85, lat));
+        touchPrevX = e.touches[0].clientX;
+        touchPrevY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+        var dx = e.touches[0].clientX - e.touches[1].clientX;
+        var dy = e.touches[0].clientY - e.touches[1].clientY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        var newFov = touchStartFov * (touchStartDist / dist);
+        camera.fov = Math.max(30, Math.min(120, newFov));
+        camera.updateProjectionMatrix();
+    }
+}, { passive: false });
+canvas.addEventListener("touchend", function() { isDragging = false; });
+
+/* --- Wheel (FOV) --- */
+canvas.addEventListener("wheel", function(e) {
+    e.preventDefault();
+    camera.fov = Math.max(30, Math.min(120, camera.fov + e.deltaY * 0.05));
+    camera.updateProjectionMatrix();
+}, { passive: false });
+
+/* --- Fullscreen --- */
+document.getElementById("fs-btn").addEventListener("click", function() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(function(){});
+    } else {
+        document.exitFullscreen();
+    }
+});
+
+function hideHint() {
+    if (hintTimer) { clearTimeout(hintTimer); hintTimer = null; }
+    hint.classList.add("hidden");
+}
+
+})();
+</script>
+</body>
+</html>
